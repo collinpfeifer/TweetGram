@@ -1,10 +1,15 @@
 module.exports.validateInfoInput = (
+  firstName,
+  lastName,
   username,
   email,
   password,
   confirmPassword
 ) => {
   const errors = {};
+  if (firstName.trim() === '' || lastName.trim() === '') {
+    errors.name = 'Name must not be empty';
+  }
   if (username.trim() === '') {
     errors.username = 'Username must not be empty';
   }

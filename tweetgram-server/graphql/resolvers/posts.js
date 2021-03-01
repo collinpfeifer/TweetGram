@@ -1,5 +1,5 @@
 const Post = require('../../models/Post');
-const checkAuth = require('../../util/checkAuth');
+const checkAuth = require('../../utils/checkAuth');
 const { AuthenticationError } = require('apollo-server');
 
 module.exports = {

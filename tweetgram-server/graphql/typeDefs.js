@@ -5,7 +5,7 @@ const typeDefs = gql`
     body: String!
     createdAt: String!
     username: String!
-    comments: [Comments]!
+    comments: [Comment]!
     likes: [Like]!
     likeCount: Int!
     commentCount: Int!
@@ -24,33 +24,41 @@ const typeDefs = gql`
   type User {
     id: ID!
     email: String!
-    token: String!
+    firstName: String!
+    lastName: String!
     username: String!
     createdAt: String!
-  }
-  input RegisterInput {
-    username: String!
-    password: String!
-    confirmPassword: String!
-    email: String!
+    token: String!
   }
   type Query {
     getPosts: [Post]
     getPost(postId: ID!): Post
   }
+  input RegisterInput {
+    firstName: String!
+    lastName: String!
+    username: String!
+    email: String!
+    password: String!
+    confirmPassword: String!
+  }
+  input LoginInput {
+    username: String!
+    password: String!
+  }
   type Mutation {
-    register(username: String!, email: String!, password: String!, confirmPassword: String!): User!
-    login(username: String!, password: String!): User!
-    edit(username: String!, email: String!, password: String!, confirmPassword: String!): User!
+    register(registerInput: RegisterInput): User!
+    login(loginInput: LoginInput): User!
+    edit(editInput: RegisterInput): User!
     createPost(body: String!): Post!
     deletePost(postId: ID!): String!
     editPost(postId: ID!, body: String!): String!
+    likePost(postId: ID!): Post!
     createComment(postId: ID!, body: String!): Post!
-    deleteComment(postId: ID!, commentId: ID!):  Post!
+    deleteComment(postId: ID!, commentId: ID!): Post!
     editComment(postId: ID!, commentId: ID!): Post!
-    likeComment(postId: ID!); Post!
   }
-  type Subscription{
+  type Subscription {
     newPost: Post!
   }
 `;

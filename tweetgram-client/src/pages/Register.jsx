@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
+
 import TextField from '@material-ui/core/TextField';
 import { Link } from 'react-router-dom';
 import Grid from '@material-ui/core/Grid';
@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 
+import { AuthContext } from '../context';
 import { useForm } from '../hooks/useForm';
 
 const useStyles = makeStyles((theme) => ({
@@ -35,9 +36,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Register = (props) => {
+  const context = useContext(AuthContext);
   const classes = useStyles();
 
-  const { onChange, onSubmit, values, errors} = useForm(registerUser, {
+  const { onChange, onSubmit, values, errors } = useForm(registerUser, {
     firstName: '',
     lastName: '',
     username: '',
@@ -47,7 +49,8 @@ const Register = (props) => {
   });
 
   const [addUser, { loading }] = useMutation(REGISTER_USER, {
-    update(_, result) {
+    update(_, { data: { register } }) {
+      context.login(register);
       props.history.push('/');
     },
     onError(e) {
@@ -62,7 +65,6 @@ const Register = (props) => {
 
   return (
     <Container component='main' maxWidth='xs'>
-      <CssBaseline />
       {loading ? (
         <CircularProgress />
       ) : (
@@ -73,7 +75,7 @@ const Register = (props) => {
           <Typography component='h1' variant='h5'>
             Sign up
           </Typography>
-          <form className={classes.form} onSubmit={onSubmit} noValidate>
+          <form className={classes.form} onSubmit={onSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField

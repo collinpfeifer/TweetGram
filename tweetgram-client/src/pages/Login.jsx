@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useMutation, gql } from '@apollo/client';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
+
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -11,6 +11,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
 
+import { AuthContext } from '../context';
 import { useForm } from '../hooks/useForm';
 
 const useStyles = makeStyles((theme) => ({
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Login = (props) => {
+  const context = useContext(AuthContext);
   const classes = useStyles();
 
   const { onChange, onSubmit, values, errors } = useForm(loginUserCallback, {
@@ -42,7 +44,8 @@ const Login = (props) => {
   });
 
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-    update(_, result) {
+    update(_, {data: {login}}) {
+      context.login(login);
       props.history.push('/');
     },
     onError(e) {
@@ -57,7 +60,6 @@ const Login = (props) => {
 
   return (
     <Container component='main' maxWidth='xs'>
-      <CssBaseline />
       {loading ? (
         <CircularProgress />
       ) : (
@@ -68,7 +70,7 @@ const Login = (props) => {
           <Typography component='h1' variant='h5'>
             Sign In
           </Typography>
-          <form className={classes.form} onSubmit={onSubmit} noValidate>
+          <form className={classes.form} onSubmit={onSubmit} >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -116,16 +118,8 @@ const Login = (props) => {
 };
 
 const LOGIN_USER = gql`
-  mutation login(
-    $username: String!
-    $password: String!
-  ) {
-    login(
-      loginInput: {
-        username: $username
-        password: $password
-      }
-    ) {
+  mutation login($username: String!, $password: String!) {
+    login(loginInput: { username: $username, password: $password }) {
       id
       createdAt
       token

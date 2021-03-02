@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PostForm = () => {
+const CommentForm = () => {
   const classes = useStyles();
 
   const { values, onChange, onSubmit, errors } = useForm(createPostCallback, {
@@ -88,7 +88,7 @@ const PostForm = () => {
   );
 };
 
-const CREATE_POST = gql`
+const CREATE_COMMENT = gql`
   mutation createPost($body: String!) {
     createPost(body: $body) {
       id
@@ -111,7 +111,7 @@ const CREATE_POST = gql`
   }
 `;
 
-const FETCH_POSTS_QUERY = gql`
+const FETCH_COMMENTS_QUERY = gql`
   query {
     getPosts {
       id
@@ -133,4 +133,4 @@ const FETCH_POSTS_QUERY = gql`
   }
 `;
 
-export default PostForm;
+export default CommentForm;

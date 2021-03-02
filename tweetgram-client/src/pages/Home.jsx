@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme) => ({
   title: {
     margin: '2rem auto',
   },
+  progress: {
+    position: 'absolute',
+    top: '50%',
+    right: '50%'
+  }
 }));
 
 const Home = () => {
@@ -28,31 +33,31 @@ const Home = () => {
 
   return (
     <Container className={classes.root}>
-      <Grid container spacing={3}>
+      <Grid container spacing={4}>
         <Typography variant='h3' className={classes.title}>
           Recent Posts
         </Typography>
-        <Grid container item xs={12} spacing={3}>
-          <Grid container justify='center'>
-            {user && (
-              <Grid item xs={4}>
-                <PostForm />
-              </Grid>
-            )}
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              data &&
-              data.getPosts.map((post) => {
-                return (
-                  <Grid item key={post.id} xs={4}>
-                    <Post post={post} />
-                  </Grid>
-                );
-              })
-            )}
+        {loading ? (
+          <CircularProgress className={classes.progress}/>
+        ) : (
+          <Grid container item xs={12} spacing={4}>
+            <Grid container justify='right'>
+              {user && (
+                <Grid item xs={4}>
+                  <PostForm />
+                </Grid>
+              )}
+              {data &&
+                data.getPosts.map((post) => {
+                  return (
+                    <Grid item key={post.id} xs={4}>
+                      <Post post={post} />
+                    </Grid>
+                  );
+                })}
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </Grid>
     </Container>
   );

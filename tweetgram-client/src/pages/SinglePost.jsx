@@ -268,7 +268,7 @@ const SinglePost = (props) => {
                     }
                     avatar={
                       <Avatar aria-label='recipe' className={classes.avatar}>
-                        {user.username.charAt(0).toUpperCase()}
+                        {comment.username.charAt(0).toUpperCase()}
                       </Avatar>
                     }
                     title={comment.username}

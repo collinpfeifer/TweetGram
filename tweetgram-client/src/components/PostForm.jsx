@@ -53,7 +53,7 @@ const PostForm = () => {
   }
 
   return (
-    <Container component='main' maxWidth='s'>
+    <Container component='main' maxWidth='xs'>
       <div className={classes.paper}>
         <Typography component='h1' variant='h5'>
           Create a Post:

@@ -1,19 +1,22 @@
 import React, { useContext, useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
+import Container from '@material-ui/core/Container';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import Button from '@material-ui/core/Button';
 import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import { red } from '@material-ui/core/colors';
 import Menu from '@material-ui/core/Menu';
+import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -24,6 +27,7 @@ import LikeButton from '../components/LikeButton';
 import DeleteButton from '../components/DeleteButton';
 
 import { AuthContext } from '../context';
+import InfoPopover from '../components/Popover';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -53,6 +57,22 @@ const useStyles = makeStyles((theme) =>
       color: 'white',
       fontSize: '0.8rem',
     },
+    paper: {
+      marginTop: theme.spacing(4),
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    input: {
+      marginTop: '1rem',
+      width: '16rem',
+    },
+    post: {
+      marginTop: '1.5rem',
+    },
+    comment: {
+      marginTop: '1rem',
+    },
   })
 );
 
@@ -62,6 +82,8 @@ const SinglePost = (props) => {
   const [expanded, setExpanded] = useState(false);
   const [postAnchorEl, setPostAnchorEl] = useState(null);
   const [commentAnchorEl, setCommentAnchorEl] = useState(null);
+  const [comment, setComment] = useState('');
+  console.log(comment);
 
   const postHandleClick = (event) => {
     setPostAnchorEl(event.currentTarget);
@@ -84,12 +106,21 @@ const SinglePost = (props) => {
     setExpanded(!expanded);
   };
 
-  const commentOnPost = () => {};
   const postId = props.match.params.postId;
 
-  const { data, loading } = useQuery(FETCH_POSTS_QUERY, {
+  const { data, loading } = useQuery(FETCH_POST_QUERY, {
     variables: {
       postId,
+    },
+  });
+
+  const [submitComment] = useMutation(COMMENT_CREATION_MUTATION, {
+    update() {
+      setComment('');
+    },
+    variables: {
+      postId,
+      body: comment,
     },
   });
 
@@ -137,9 +168,11 @@ const SinglePost = (props) => {
           action={
             user &&
             user.username === username && (
-              <IconButton onClick={postHandleClick} aria-label='settings'>
-                <MoreVertIcon />
-              </IconButton>
+              <InfoPopover content='Settings'>
+                <IconButton onClick={postHandleClick} aria-label='settings'>
+                  <MoreVertIcon />
+                </IconButton>
+              </InfoPopover>
             )
           }
           component={Link}
@@ -155,10 +188,14 @@ const SinglePost = (props) => {
           </Typography>
         </CardContent>
         <CardActions disableSpacing>
-          <LikeButton user={user} post={{ id, likes }} />
-          <IconButton aria-label='share' onClick={commentOnPost}>
-            <ShareIcon />
-          </IconButton>
+          <InfoPopover content='Like this post'>
+            <LikeButton user={user} post={{ id, likes }} />
+          </InfoPopover>
+          <InfoPopover content='Share this post'>
+            <IconButton aria-label='share'>
+              <ShareIcon />
+            </IconButton>
+          </InfoPopover>
           <IconButton
             className={clsx(classes.expand, {
               [classes.expandOpen]: expanded,
@@ -173,13 +210,38 @@ const SinglePost = (props) => {
           <CardContent>
             <Typography paragraph>{`${commentCount} comments:`}</Typography>
             {user && (
-                <Card>
-                    
-                </Card>
+              <Container component='main' maxWidth=''>
+                <div className={classes.paper}>
+                  <form className={classes.form}>
+                    <Grid container spacing={3}>
+                      <Grid item xs={4}>
+                        <TextField
+                          variant='outlined'
+                          required
+                          id='comment'
+                          label='Write a comment'
+                          name='comment'
+                          className={classes.input}
+                          onChange={(event) => setComment(event.target.value)}
+                          value={comment}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Button
+                      onClick={submitComment}
+                      variant='contained'
+                      color='primary'
+                      className={classes.post}
+                      disabled={comment.trim() === ''}>
+                      Post
+                    </Button>
+                  </form>
+                </div>
+              </Container>
             )}
             {comments.map((comment) => {
               return (
-                <CardContent>
+                <Card className={classes.comment}>
                   <Menu
                     id='simple-menu'
                     anchorEl={commentAnchorEl}
@@ -191,19 +253,31 @@ const SinglePost = (props) => {
                       <DeleteButton postId={id} commentId={comment.id} />
                     </MenuItem>
                   </Menu>
-                  {user && user.username === comment.username && (
-                    <IconButton
-                      onClick={commentHandleClick}
-                      aria-label='settings'>
-                      <MoreVertIcon />
-                    </IconButton>
-                  )}
                   <CardHeader
+                    action={
+                      user &&
+                      user.username === comment.username && (
+                        <InfoPopover content='Settings'>
+                          <IconButton
+                            onClick={commentHandleClick}
+                            aria-label='settings'>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </InfoPopover>
+                      )
+                    }
+                    avatar={
+                      <Avatar aria-label='recipe' className={classes.avatar}>
+                        {username.charAt(0).toUpperCase()}
+                      </Avatar>
+                    }
                     title={comment.username}
                     subheader={moment(comment.createdAt).fromNow()}
                   />
-                  <Typography paragraph>{comment.body}</Typography>
-                </CardContent>
+                  <Typography paragraph style={{ padding: '1rem' }}>
+                    {comment.body}
+                  </Typography>
+                </Card>
               );
             })}
           </CardContent>
@@ -218,7 +292,7 @@ const SinglePost = (props) => {
   );
 };
 
-const FETCH_POSTS_QUERY = gql`
+const FETCH_POST_QUERY = gql`
   query($postId: ID!) {
     getPost(postId: $postId) {
       id
@@ -236,6 +310,21 @@ const FETCH_POSTS_QUERY = gql`
         createdAt
         body
       }
+    }
+  }
+`;
+
+const COMMENT_CREATION_MUTATION = gql`
+  mutation($postId: ID!, $body: String!) {
+    createComment(postId: $postId, body: $body) {
+      id
+      comments {
+        id
+        body
+        createdAt
+        username
+      }
+      commentCount
     }
   }
 `;

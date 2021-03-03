@@ -41,7 +41,7 @@ const Home = () => {
           <CircularProgress className={classes.progress}/>
         ) : (
           <Grid container item xs={12} spacing={4}>
-            <Grid container justify='right'>
+            <Grid container justify='flex-start'>
               {user && (
                 <Grid item xs={4}>
                   <PostForm />

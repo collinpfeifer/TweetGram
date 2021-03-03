@@ -83,7 +83,6 @@ const Register = (props) => {
                   name='firstName'
                   variant='outlined'
                   required
-                  fullWidth
                   id='firstName'
                   label='First Name'
                   value={values.firstName}
@@ -96,7 +95,6 @@ const Register = (props) => {
                 <TextField
                   variant='outlined'
                   required
-                  fullWidth
                   id='lastName'
                   label='Last Name'
                   name='lastName'
@@ -166,7 +164,6 @@ const Register = (props) => {
             </Grid>
             <Button
               type='submit'
-              fullWidth
               variant='contained'
               color='primary'
               className={classes.submit}>

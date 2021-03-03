@@ -17,9 +17,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+
+import InfoPopover from './Popover';
 import LikeButton from './LikeButton';
 import DeleteButton from './DeleteButton';
-
 import { AuthContext } from '../context';
 
 const useStyles = makeStyles((theme) =>
@@ -57,7 +58,6 @@ const Post = ({
   const classes = useStyles();
   const [postAnchorEl, setPostAnchorEl] = useState(null);
   const [shareAnchorEl, setShareAnchorEl] = useState(null);
-  console.log(postAnchorEl);
 
   const postHandleClick = (event) => {
     setPostAnchorEl(event.currentTarget);
@@ -99,9 +99,11 @@ const Post = ({
         }
         style={{ textDecoration: 'none', color: 'black' }}
         action={
-          <IconButton onClick={postHandleClick} aria-label='settings'>
-            <MoreVertIcon />
-          </IconButton>
+          <InfoPopover content='Settings'>
+            <IconButton onClick={postHandleClick} aria-label='settings'>
+              <MoreVertIcon />
+            </IconButton>
+          </InfoPopover>
         }
         component={Link}
         to={`/posts/${id}`}
@@ -125,10 +127,14 @@ const Post = ({
           <MenuItem onClick={shareHandleClose}>Share on Facebook</MenuItem>
           <MenuItem onClick={shareHandleClose}>Share on Google</MenuItem>
         </Menu>
-        <LikeButton user={user} post={{ id, likes }} />
-        <IconButton aria-label='share' onClick={shareHandleClick}>
-          <ShareIcon />
-        </IconButton>
+        <InfoPopover content='Like this post'>
+          <LikeButton user={user} post={{ id, likes }} />
+        </InfoPopover>
+        <InfoPopover content='Share this post'>
+          <IconButton aria-label='share' onClick={shareHandleClick}>
+            <ShareIcon />
+          </IconButton>
+        </InfoPopover>
         <IconButton
           className={classes.expand}
           component={Link}

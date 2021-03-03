@@ -70,7 +70,7 @@ const Login = (props) => {
           <Typography component='h1' variant='h5'>
             Sign In
           </Typography>
-          <form className={classes.form} onSubmit={onSubmit} >
+          <form className={classes.form} onSubmit={onSubmit}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -103,7 +103,6 @@ const Login = (props) => {
             </Grid>
             <Button
               type='submit'
-              fullWidth
               variant='contained'
               color='primary'
               className={classes.submit}>

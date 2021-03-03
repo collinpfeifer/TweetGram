@@ -26,9 +26,7 @@ const useStyles = makeStyles({
 const MenuBar = () => {
   const { user, logout } = useContext(AuthContext);
   const classes = useStyles();
-  const pathname = window.location.pathname;
-  const path = pathname === '/' ? 0 : pathname === '/login' ? 1 : 2;
-  const [value, setValue] = useState(path);
+  const [value, setValue] = useState(0);
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -52,7 +50,6 @@ const MenuBar = () => {
             value={value}
             onChange={handleChange}
             indicatorColor='primary'
-            textColor='inherit'
             className={classes.menu}>
             <Tab component={Link} to='/' label='Home' />
             <Tab
@@ -77,7 +74,6 @@ const MenuBar = () => {
             value={value}
             onChange={handleChange}
             indicatorColor='primary'
-            textColor='inherit'
             className={classes.menu}>
             <Tab component={Link} to='/' label='Home' />
             <Tab

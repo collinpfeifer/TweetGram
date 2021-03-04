@@ -41,16 +41,16 @@ const Home = () => {
           <CircularProgress className={classes.progress}/>
         ) : (
           <Grid container item xs={12} spacing={4}>
-            <Grid container justify='flex-start'>
+            <Grid container justify='flex-start' alignItems='center'>
               {user && (
-                <Grid item xs={4}>
+                <Grid item xs={12} sm={4}>
                   <PostForm />
                 </Grid>
               )}
               {data &&
                 data.getPosts.map((post) => {
                   return (
-                    <Grid item key={post.id} xs={4}>
+                    <Grid item key={post.id} xs={12} sm={4}>
                       <Post post={post} />
                     </Grid>
                   );

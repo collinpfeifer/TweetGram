@@ -178,15 +178,17 @@ const SinglePost = (props) => {
           component={Link}
           to={`/posts/${id}`}
           title={username}
-          subheader={`${moment(createdAt).fromNow(
-            true
-          )} and ${`${likeCount} likes`}`}
+          subheader={`${moment(createdAt).fromNow(true)} ago`}
         />
         <CardContent>
           <Typography variant='body2' color='textSecondary' component='p'>
             {body}
           </Typography>
         </CardContent>
+        <CardHeader
+          subheader={`${`${likeCount} likes`}`}
+          style={{ padding: '0 1rem' }}
+        />
         <CardActions disableSpacing>
           <InfoPopover content='Like this post'>
             <LikeButton user={user} post={{ id, likes }} />

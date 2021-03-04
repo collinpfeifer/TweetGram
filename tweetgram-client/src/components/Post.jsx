@@ -108,15 +108,17 @@ const Post = ({
         component={Link}
         to={`/posts/${id}`}
         title={username}
-        subheader={`${moment(createdAt).fromNow(
-          true
-        )} and ${`${likeCount} likes`}`}
+        subheader={`${moment(createdAt).fromNow(true)} ago`}
       />
       <CardContent>
         <Typography variant='body2' color='textSecondary' component='p'>
           {body}
         </Typography>
       </CardContent>
+      <CardHeader
+        subheader={`${`${likeCount} likes`}`}
+        style={{ padding: '0 1rem' }}
+      />
       <CardActions disableSpacing>
         <Menu
           id='simple-menu'
